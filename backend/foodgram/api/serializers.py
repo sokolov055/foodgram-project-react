@@ -34,7 +34,7 @@ class CustomUserSerializer(UserSerializer):
             'first_name',
             'last_name',
             'is_subscribed',
-            )
+        )
 
     def get_is_subscribed(self, object):
         """Проверяет, подписан ли текущий пользователь на автора аккаунта."""
@@ -153,7 +153,7 @@ class RecipeGETSerializer(serializers.ModelSerializer):
     image = Base64ImageField(
         required=False,
         allow_null=True
-        )
+    )
     author = CustomUserSerializer(read_only=True)
     is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
@@ -199,7 +199,7 @@ class RecipeIngredientCreateSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         source='ingredient',
         queryset=Ingredient.objects.all()
-        )
+    )
 
     class Meta:
         model = RecipeIngredient
@@ -256,7 +256,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             RecipeIngredient(
                 ingredient=Ingredient.objects.get(
                     id=ingredient['ingredient'].id
-                    ),
+                ),
                 recipe=recipe,
                 amount=ingredient.get('amount')
             )
