@@ -247,7 +247,7 @@ class RecipeSerializer(serializers.ModelSerializer):
                     raise ValueError
             except (ValueError, TypeError):
                 raise serializers.ValidationError(
-                    'Количество ингредиента должно быть ' +
+                    'Количество ингредиента должно быть '
                     'целым числом больше или равно 1'
                 )
         return ingredients
