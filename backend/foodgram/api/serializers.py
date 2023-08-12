@@ -9,6 +9,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from recipes.models import Tag, Recipe, RecipeIngredient, Ingredient
 from users.models import Subscribe
 
+
 User = get_user_model()
 
 
@@ -89,7 +90,12 @@ class SubscriptionShowSerializer(CustomUserSerializer):
         limit = request.GET.get('recipes_limit')
         recipes = obj.recipes.all()
         if limit:
-            recipes = recipes[:int(limit)]
+            try:
+                recipes = recipes[:int(limit)]
+            except ValueError:
+                raise serializers.ValidationError(
+                    'Некорректное значение параметра recipes_limit'
+                )
         serializer = RecipeShortSerializer(recipes, many=True, read_only=True)
         return serializer.data
 
@@ -235,9 +241,14 @@ class RecipeSerializer(serializers.ModelSerializer):
                 'Ингредиенты рецепта должны быть уникальными'
             )
         for ingredient in ingredients:
-            if int(ingredient.get('amount')) < 1:
+            try:
+                amount = int(ingredient.get('amount'))
+                if amount < 1:
+                    raise ValueError
+            except (ValueError, TypeError):
                 raise serializers.ValidationError(
-                    'Количество ингредиента не может быть меньше 1'
+                    'Количество ингредиента должно быть ' +
+                    'целым числом больше или равно 1'
                 )
         return ingredients
 

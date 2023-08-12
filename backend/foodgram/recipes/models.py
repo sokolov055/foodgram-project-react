@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+
 User = get_user_model()
 
 
@@ -9,6 +10,13 @@ class Tag(models.Model):
     name = models.CharField(max_length=200)
     color = models.CharField(max_length=7)
     slug = models.SlugField(max_length=200, unique=True)
+
+    class Meta:
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
+
+    def __str__(self):
+        return self.name
 
 
 class Recipe(models.Model):
@@ -30,16 +38,19 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(Tag)
     ingredients = models.ManyToManyField('Ingredient',
                                          through='RecipeIngredient')
-    # pub_date = models.DateTimeField(
-    #     auto_now_add=True,
-    #     verbose_name='дата публикации',
-    #     db_index=True
-    # )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='дата публикации',
+        db_index=True
+    )
 
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-        ordering = ('id',)
+        ordering = ('-pub_date',)
+
+    def __str__(self):
+        return self.name
 
 
 class TagRecipe(models.Model):
@@ -68,12 +79,26 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=200)
     measurement_unit = models.CharField(max_length=200)
 
+    class Meta:
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
+
+    def __str__(self):
+        return self.name
+
 
 class RecipeIngredient(models.Model):
     """Промежуточная модель связи ингредиента и рецепта"""
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     amount = models.PositiveBigIntegerField()
+
+    class Meta:
+        verbose_name = 'Рецепт + ингредиент'
+        verbose_name_plural = 'Рецепты + ингредиенты'
+
+    def __str__(self):
+        return f'{self.recipe} => {self.ingredient}'
 
 
 class FavoriteRecipe(models.Model):
