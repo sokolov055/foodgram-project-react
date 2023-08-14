@@ -71,7 +71,7 @@ DATABASES = {
     'default': {
         # Меняем настройку Django: теперь для работы будет использоваться
         # бэкенд postgresql
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': os.getenv('DB_ENGINE'),
         'NAME': os.getenv('POSTGRES_DB', 'django'),
         'USER': os.getenv('POSTGRES_USER', 'django'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
