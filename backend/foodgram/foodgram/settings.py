@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 
-
+CSRF_TRUSTED_ORIGINS = ('https://foodgramsokolov.sytes.net',)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -9,7 +9,7 @@ SECRET_KEY = 'django-insecure-9oh8d%x(306n--k5*2i8eorg)a3cdjo(vq1^q6&l6#_19+8q12
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['51.250.24.149', '127.0.0.1', 'localhost', 'foodgramsokolov.sytes.net']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -59,10 +59,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # Меняем настройку Django: теперь для работы будет использоваться
+        # бэкенд postgresql
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('POSTGRES_DB', 'django'),
+        'USER': os.getenv('POSTGRES_USER', 'django'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'HOST': os.getenv('DB_HOST', ''),
+        'PORT': os.getenv('DB_PORT', 5432)
     }
 }
 
@@ -118,3 +132,6 @@ DJOSER = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATIC_URL = '/backend_static/'
+STATIC_ROOT = BASE_DIR / 'collected_static'

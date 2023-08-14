@@ -234,7 +234,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         """Проверяем, что рецепт содержит уникальные ингредиенты
         и их количество не меньше 1."""
         ingredients_data = [
-            ingredient.get('id') for ingredient in ingredients
+            ingredient['ingredient'].id for ingredient in ingredients
         ]
         if len(ingredients_data) != len(set(ingredients_data)):
             raise serializers.ValidationError(

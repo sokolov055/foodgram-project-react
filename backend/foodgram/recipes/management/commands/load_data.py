@@ -13,7 +13,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         for model, csv_f in TABLES.items():
             with open(
-                f'{settings.BASE_DIR}\\data\\{csv_f}',
+                f'{settings.BASE_DIR}/data/{csv_f}',
                 'r',
                 encoding='utf-8'
             ) as csv_file:

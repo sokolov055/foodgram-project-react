@@ -38,16 +38,16 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(Tag)
     ingredients = models.ManyToManyField('Ingredient',
                                          through='RecipeIngredient')
-    pub_date = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='дата публикации',
-        db_index=True
-    )
+    # pub_date = models.DateTimeField(
+    #     auto_now_add=True,
+    #     verbose_name='дата публикации',
+    #     db_index=True
+    # )
 
     class Meta:
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
-        ordering = ('-pub_date',)
+        ordering = ('id',)
 
     def __str__(self):
         return self.name
