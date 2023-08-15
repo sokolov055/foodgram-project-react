@@ -108,7 +108,7 @@ sudo apt-get install docker-compose-plugin              # последняя в�
 - Скопировать на сервер файлы docker-compose.yml, nginx.conf из папки infra (команды выполнять находясь в папке infra):
 
 ```
-scp docker-compose.yml nginx.conf username@IP:/home/username/   # username - имя пользователя на сервере
+scp docker-compose.production.yml nginx.conf username@IP:/home/username/   # username - имя пользователя на сервере
                                                                 # IP - публичный IP сервера
 ```
 
@@ -135,18 +135,18 @@ DB_PORT                 # 5432 (порт по умолчанию)
 - Создать и запустить контейнеры Docker, выполнить команду на сервере
 *(версии команд "docker compose" или "docker-compose" отличаются в зависимости от установленной версии Docker Compose):*
 ```
-sudo docker compose up -d
+sudo docker compose -f docker-compose.production.yml up -d
 ```
 
 - После успешной сборки создать суперпользователя:
 ```
-sudo docker compose exec backend python manage.py createsuperuser
+sudo docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser
 ```
 
 - Для остановки контейнеров Docker:
 ```
-sudo docker compose down -v      # с их удалением
-sudo docker compose stop         # без удаления
+sudo docker compose -f docker-compose.production.yml down -v      # с их удалением
+sudo docker compose stop -f docker-compose.production.yml         # без удаления
 ```
 
 ### Автор:
