@@ -38,11 +38,6 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(Tag)
     ingredients = models.ManyToManyField('Ingredient',
                                          through='RecipeIngredient')
-    # pub_date = models.DateTimeField(
-    #     auto_now_add=True,
-    #     verbose_name='дата публикации',
-    #     db_index=True
-    # )
 
     class Meta:
         verbose_name = 'Рецепт'
@@ -89,8 +84,15 @@ class Ingredient(models.Model):
 
 class RecipeIngredient(models.Model):
     """Промежуточная модель связи ингредиента и рецепта"""
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='recipes',
+    )
+    ingredient = models.ForeignKey(
+        Ingredient,
+        on_delete=models.CASCADE,
+    )
     amount = models.PositiveBigIntegerField()
 
     class Meta:

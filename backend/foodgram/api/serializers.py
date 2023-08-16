@@ -10,6 +10,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from rest_framework.fields import SerializerMethodField
 from users.models import Subscribe
 
+
 User = get_user_model()
 
 
@@ -181,8 +182,8 @@ class RecipeGETSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_ingredients(object):
-        """Получает ингредиенты из модели IngredientAmount."""
-        ingredients = RecipeIngredient.objects.filter(recipe=object)
+        """Получает ингредиенты из модели RecipeIngredient"""
+        ingredients = object.recipes.all()
         return RecipeIngredientSerializer(ingredients, many=True).data
 
     def get_is_favorited(self, object):
@@ -244,12 +245,10 @@ class RecipeSerializer(serializers.ModelSerializer):
             try:
                 amount = int(ingredient.get('amount'))
                 if amount < 1:
-                    raise ValueError
+                    raise ValueError()
             except (ValueError, TypeError):
-                raise serializers.ValidationError(
-                    'Количество ингредиента должно быть '
-                    'целым числом больше или равно 1'
-                )
+                raise ValueError('Количество ингредиента должно быть '
+                                 'целым числом больше или равно 1')
         return ingredients
 
     def validate_tags(self, tags):
@@ -259,6 +258,11 @@ class RecipeSerializer(serializers.ModelSerializer):
                 'Теги рецепта должны быть уникальными'
             )
         return tags
+
+    def validate_cooking_time(self, cooking_time):
+        if cooking_time < 1:
+            raise ValueError('Время приготовления должно быть строго больше 1')
+        return cooking_time
 
     @staticmethod
     def add_ingredients(ingredients_data, recipe):
@@ -279,9 +283,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         author = self.context.get('request').user
         tags_data = validated_data.pop('tags')
         ingredients_data = validated_data.pop('ingredients')
+        validated_ingredients = self.validate_ingredients(ingredients_data)
         recipe = Recipe.objects.create(author=author, **validated_data)
         recipe.tags.set(tags_data)
-        self.add_ingredients(ingredients_data, recipe)
+        self.add_ingredients(validated_ingredients, recipe)
         return recipe
 
     @transaction.atomic
