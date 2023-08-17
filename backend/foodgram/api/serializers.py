@@ -241,14 +241,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Ингредиенты рецепта должны быть уникальными'
             )
-        for ingredient in ingredients:
-            try:
-                amount = int(ingredient.get('amount'))
-                if amount < 1:
-                    raise ValueError()
-            except (ValueError, TypeError):
-                raise ValueError('Количество ингредиента должно быть '
-                                 'целым числом больше или равно 1')
         return ingredients
 
     def validate_tags(self, tags):
