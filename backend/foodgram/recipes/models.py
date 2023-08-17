@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.validators import MinValueValidator
 
 
 User = get_user_model()
@@ -93,7 +94,7 @@ class RecipeIngredient(models.Model):
         Ingredient,
         on_delete=models.CASCADE,
     )
-    amount = models.PositiveBigIntegerField()
+    amount = models.PositiveBigIntegerField(validators=[MinValueValidator(1)])
 
     class Meta:
         verbose_name = 'Рецепт + ингредиент'
